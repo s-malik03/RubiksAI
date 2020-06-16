@@ -1,9 +1,10 @@
 import tkinter as tk
 from array import *
+import numpy
 
 class OptionMenu(tk.Frame): 
 
-    def __init__(self, master, status, *options):
+    def __init__(self, coordinates, master, status, *options):
 
         super().__init__(master) 
 
@@ -11,6 +12,7 @@ class OptionMenu(tk.Frame):
         self.status.set(status)
         self.dropdown = tk.OptionMenu(self, self.status, *options)
         self.dropdown.pack()
+        self.coordinates=coordinates
 
     def getval(self):
 
@@ -21,7 +23,7 @@ class Cube():
 
     def __init__(self):
 
-        self.face=[[["","",""],["","",""],["","",""]]]*6
+        self.face=numpy.full((6,3,3,),"##############")
 
     def WriteToFace(self,facenum,row,column,value):
 
@@ -35,10 +37,16 @@ class Cube():
 
         return self.face[num]
 
+    def GetAllFaces(self):
+
+        return self.face
+
 
 def GetInput(CubeObject):
 
     faces=[None]*6
+
+    FaceArray=[[["","",""],["","",""],["","",""]]]*6
 
     for fn in range(0,6):
 
@@ -46,7 +54,7 @@ def GetInput(CubeObject):
 
         Window.title("Face "+str(fn))
 
-        color=[OptionMenu(Window,"white","white","yellow","orange","red","blue","green")]*9
+        color=[OptionMenu((0,0),Window,"white","white","yellow","orange","red","blue","green")]*9
 
         i=0
 
@@ -54,7 +62,7 @@ def GetInput(CubeObject):
 
             for c in range(3):
 
-                color[i]=OptionMenu(Window,"white","white","yellow","orange","red","blue","green")
+                color[i]=OptionMenu((r,c),Window,"white","white","yellow","orange","red","blue","green")
 
                 color[i].grid(row=r,column=c)
 
@@ -68,17 +76,15 @@ def GetInput(CubeObject):
 
         faces[fn]=color
 
-    count=0
-
-    for fn in range(0,6):
+    for f in range(0,6):
 
         count=0
 
-        for r in range(0,3):
+        for x in range(0,3):
 
-            for c in range(0,3):
+            for y in range(0,3):
 
-                CubeObject.WriteToFace(fn,r,c,faces[fn][count].getval())
+                CubeObject.WriteToFace(f,x,y,faces[f][count].getval())
 
                 count=count+1
 
@@ -88,6 +94,10 @@ def GetInput(CubeObject):
 c=Cube()
 
 c=GetInput(c)
+
+for x in range(0,6):
+
+    print(c.GetFace(x))
 
 
 
