@@ -47,6 +47,8 @@ class Cube():
 
         }
 
+        self.actions=[]
+
     def WriteToFace(self,facenum,row,column,value):
 
         self.face[facenum][row][column]=value
@@ -104,6 +106,8 @@ class Cube():
         newface[1]=self.ClockWise(1)
 
         self.face=newface
+
+        self.actions.append("U")
 
 
 def GetInput(CubeObject):
