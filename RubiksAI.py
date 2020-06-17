@@ -71,9 +71,9 @@ class Cube():
 
             for x in range(-1,2):
 
-                xy=mappings[(x,y)]
+                xy=self.mappings[(x,y)]
 
-                xy_=mappings[(y,x*-1)]
+                xy_=self.mappings[(y,x*-1)]
 
                 f[xy_[0]][xy_[1]]=self.face[facenumber][xy[0]][xy[1]]
 
