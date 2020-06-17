@@ -25,6 +25,28 @@ class Cube():
 
         self.face=numpy.full((6,3,3,),"##############")
 
+        self.mappings={
+
+            (0,0):(1,1),
+
+            (0,1):(0,1),
+
+            (0,-1):(2,1),
+
+            (1,0):(1,2),
+
+            (1,1):(0,2),
+
+            (1,-1):(2,2),
+
+            (-1,0):(1,0),
+
+            (-1,1):(0,0),
+
+            (-1,-1):(2,0)
+
+        }
+
     def WriteToFace(self,facenum,row,column,value):
 
         self.face[facenum][row][column]=value
@@ -40,6 +62,50 @@ class Cube():
     def GetAllFaces(self):
 
         return self.face
+
+    def ClockWise(self,facenumber):
+
+        f=self.face[facenumber]
+
+        for y in range(-1,2):
+
+            for x in range(-1,2):
+
+                xy=mappings[(x,y)]
+
+                xy_=mappings[(y,x*-1)]
+
+                f[xy_[0]][xy_[1]]=self.face[facenumber][xy[0]][xy[1]]
+
+        return f
+
+    def U(self):
+
+        newface=self.face
+
+        newface[0][0]=self.face[3][0]
+
+        newface[4][0]=self.face[0][0]
+
+        newface[5][0]=self.face[4][0]
+
+        newface[3][0]=self.face[5][0]
+
+        newface[1][0][0]=self.face[1][2][0]
+
+        newface[1][0][1]=self.face[1][1][0]
+
+        newface[1][0][2]=self.face[1][0][0]
+
+        newface[1][1][0]=self.face[1][2][1]
+
+        newface[1][1][2]=self.face[1][0][1]
+
+        newface[1][2][0]=self.face[1][2][2]
+
+        newface[1][2][1]=self.face[1][1][2]
+
+        newface[1][2][2]=self.face[1][0][2]
 
 
 def GetInput(CubeObject):
