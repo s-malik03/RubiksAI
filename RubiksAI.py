@@ -2,6 +2,40 @@ import tkinter as tk
 from array import *
 import numpy
 
+class Node():
+
+    def __init__(self,state,parent):
+
+        self.state=state
+
+        self.parent=parent
+
+class Frontier():
+
+    def __init__(self):
+
+        self.frontier=[]
+
+    def add(self,node):
+
+        self.frontier.append(node)
+
+    def remove(self):
+
+        if len(self.frontier==0):
+
+            raise Exception("No Solution"):
+
+        else:
+
+            node=self.frontier[-1]
+
+            self.frontier=self.frontier[:-1]
+
+            return node
+
+
+
 class OptionMenu(tk.Frame): 
 
     def __init__(self, coordinates, master, status, *options):
@@ -109,6 +143,49 @@ class Cube():
 
         self.actions.append("U")
 
+    def L(self):
+
+        self.actions.append("L")
+
+    def F(self):
+
+        self.actions.append("F")
+
+    def R(self):
+
+        self.actions.append("R")
+
+    def B(self):
+
+        self.actions.append("B")
+
+    def D(self):
+
+        self.actions.append("D")
+
+    def U_(self):
+
+        self.actions.append("U`")
+
+    def L_(self):
+
+        self.actions.append("L`")
+
+    def F_(self):
+
+        self.actions.append("F`")
+
+    def R_(self):
+
+        self.actions.append("R`")
+
+    def B_(self):
+
+        self.actions.append("B`")
+
+    def D_(self):
+
+        self.actions.append("D`")
 
 def GetInput(CubeObject):
 
