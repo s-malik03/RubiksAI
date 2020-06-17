@@ -1,13 +1,13 @@
 import tkinter as tk
 from array import *
 import numpy
+import copy
 
 class Node():
 
     def __init__(self,state,parent):
 
         self.state=state
-
         self.parent=parent
 
 class Frontier():
@@ -23,25 +23,17 @@ class Frontier():
     def remove(self):
 
         if len(self.frontier==0):
-
-            raise Exception("No Solution"):
-
+            raise Exception("No Solution")
         else:
-
             node=self.frontier[-1]
-
             self.frontier=self.frontier[:-1]
-
             return node
-
-
 
 class OptionMenu(tk.Frame): 
 
     def __init__(self, coordinates, master, status, *options):
 
         super().__init__(master) 
-
         self.status = tk.StringVar()
         self.status.set(status)
         self.dropdown = tk.OptionMenu(self, self.status, *options)
@@ -51,36 +43,25 @@ class OptionMenu(tk.Frame):
     def getval(self):
 
         return self.status.get()
-
         
 class Cube():
 
     def __init__(self):
 
-        self.face=numpy.full((6,3,3,),"##############")
-
+        self.face=numpy.full((6,3,3,),
+                             "##############"
+                             )
         self.mappings={
-
             (0,0):(1,1),
-
             (0,1):(0,1),
-
             (0,-1):(2,1),
-
             (1,0):(1,2),
-
             (1,1):(0,2),
-
             (1,-1):(2,2),
-
             (-1,0):(1,0),
-
             (-1,1):(0,0),
-
             (-1,-1):(2,0)
-
         }
-
         self.actions=[]
 
     def WriteToFace(self,facenum,row,column,value):
@@ -102,53 +83,45 @@ class Cube():
     def ClockWise(self,facenumber):
 
         f=numpy.full((3,3),"#############")
-
         for y in range(-1,2):
-
             for x in range(-1,2):
-
                 xy=self.mappings[(x,y)]
-
                 r=xy[0]
-
                 c=xy[1]
-
                 x2=0-x
-
                 xy_=self.mappings[(y,x2)]
-
                 r2=xy_[0]
-
                 c2=xy_[1]
-
                 f[r2][c2]=self.face[facenumber][r][c]
-
-        return f
+        return copy.deepcopy(f)
 
     def U(self):
 
-        newface=numpy.full((6,3,3,),"##############")
-
+        newface=copy.deepcopy(self.face)
         newface[0][0]=self.face[3][0]
-
         newface[4][0]=self.face[0][0]
-
         newface[5][0]=self.face[4][0]
-
         newface[3][0]=self.face[5][0]
-
         newface[1]=self.ClockWise(1)
-
-        self.face=newface
-
+        self.face=copy.deepcopy(newface)
         self.actions.append("U")
 
     def L(self):
 
+        newface=copy.deepcopy(self.face)
+        for i in range(0,3):
+            newface[0][i][0]=self.face[1][i][0]
+            newface[1][i][0]=self.face[5][i][0]
+            newface[2][i][0]=self.face[0][i][0]
+            newface[5][i][0]=self.face[2][i][0]
+        newface[4]=self.Clockwise(4)
+        self.face=copy.deepcopy(newface)
         self.actions.append("L")
 
     def F(self):
 
+        newface[0]=self.ClockWise(0)
+        #incomplete: needs changes to other faces
         self.actions.append("F")
 
     def R(self):
@@ -190,61 +163,63 @@ class Cube():
 def GetInput(CubeObject):
 
     faces=[None]*6
-
     FaceArray=[[["","",""],["","",""],["","",""]]]*6
-
     for fn in range(0,6):
-
         Window=tk.Tk()
-
         Window.title("Face "+str(fn))
-
-        color=[OptionMenu((0,0),Window,"white","white","yellow","orange","red","blue","green")]*9
-
+        color=[OptionMenu((0,0),
+                          Window,
+                          "white",
+                          "white",
+                          "yellow",
+                          "orange",
+                          "red",
+                          "blue",
+                          "green"
+                          )
+               ]*9
         i=0
-
         for r in range(3):
-
             for c in range(3):
-
-                color[i]=OptionMenu((r,c),Window,"white","white","yellow","orange","red","blue","green")
-
-                color[i].grid(row=r,column=c)
-
+                color[i]=OptionMenu((r,c),
+                                    Window,
+                                    "white",
+                                    "white",
+                                    "yellow",
+                                    "orange",
+                                    "red",
+                                    "blue",
+                                    "green"
+                                    )
+                color[i].grid(row=r,
+                              column=c
+                              )
                 i=i+1
-
-        button = tk.Button(text = "Submit", command = lambda: Window.destroy())
-
-        button.grid(row=4,column=1)
-
+        button = tk.Button(text = "Submit",
+                           command = lambda: Window.destroy()
+                           )
+        button.grid(row=4,
+                    column=1
+                    )
         Window.mainloop()
-
         faces[fn]=color
-
     for f in range(0,6):
-
         count=0
-
         for x in range(0,3):
-
             for y in range(0,3):
-
-                CubeObject.WriteToFace(f,x,y,faces[f][count].getval())
-
+                CubeObject.WriteToFace(f,
+                                       x,
+                                       y,
+                                       faces[f][count].getval()
+                                       )
                 count=count+1
-
     return CubeObject
 
-
 c=Cube()
-
 c=GetInput(c)
-
+c.U()
 for x in range(0,6):
-
     print(c.GetFace(x))
-
-print(c.ClockWise(0))
 
 
 
