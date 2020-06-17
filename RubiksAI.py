@@ -65,7 +65,7 @@ class Cube():
 
     def ClockWise(self,facenumber):
 
-        f=self.face[facenumber]
+        f=numpy.full((3,3),"#############")
 
         for y in range(-1,2):
 
@@ -73,15 +73,25 @@ class Cube():
 
                 xy=self.mappings[(x,y)]
 
-                xy_=self.mappings[(y,x*-1)]
+                r=xy[0]
 
-                f[xy_[0]][xy_[1]]=self.face[facenumber][xy[0]][xy[1]]
+                c=xy[1]
+
+                x2=0-x
+
+                xy_=self.mappings[(y,x2)]
+
+                r2=xy_[0]
+
+                c2=xy_[1]
+
+                f[r2][c2]=self.face[facenumber][r][c]
 
         return f
 
     def U(self):
 
-        newface=self.face
+        newface=numpy.full((6,3,3,),"##############")
 
         newface[0][0]=self.face[3][0]
 
@@ -91,21 +101,9 @@ class Cube():
 
         newface[3][0]=self.face[5][0]
 
-        newface[1][0][0]=self.face[1][2][0]
+        newface[1]=self.ClockWise(1)
 
-        newface[1][0][1]=self.face[1][1][0]
-
-        newface[1][0][2]=self.face[1][0][0]
-
-        newface[1][1][0]=self.face[1][2][1]
-
-        newface[1][1][2]=self.face[1][0][1]
-
-        newface[1][2][0]=self.face[1][2][2]
-
-        newface[1][2][1]=self.face[1][1][2]
-
-        newface[1][2][2]=self.face[1][0][2]
+        self.face=newface
 
 
 def GetInput(CubeObject):
@@ -164,6 +162,8 @@ c=GetInput(c)
 for x in range(0,6):
 
     print(c.GetFace(x))
+
+print(c.ClockWise(0))
 
 
 
