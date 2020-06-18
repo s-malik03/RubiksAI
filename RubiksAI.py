@@ -95,6 +95,21 @@ class Cube():
                 f[r2][c2]=self.face[facenumber][r][c]
         return copy.deepcopy(f)
 
+    def AntiClockWise(self,facenumber):
+
+        f=numpy.full((3,3),"#############")
+        for y in range(-1,2):
+            for x in range(-1,2):
+                xy=self.mappings[(x,y)]
+                r=xy[0]
+                c=xy[1]
+                y2=0-y
+                xy_=self.mappings[(y2,x)]
+                r2=xy_[0]
+                c2=xy_[1]
+                f[r2][c2]=self.face[facenumber][r][c]
+        return copy.deepcopy(f)
+
     def U(self):
 
         newface=copy.deepcopy(self.face)
