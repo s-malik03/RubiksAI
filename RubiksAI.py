@@ -1,35 +1,35 @@
-import tkinter as tk
+0import tkinter as tk
 from array import *
 import numpy
 import copy
 
-class Node():
+class Node(): #to contain current state and parent state
 
     def __init__(self,state,parent):
 
         self.state=state
         self.parent=parent
 
-class Frontier():
+class Frontier(): #to store all nodes to be explored
 
     def __init__(self):
 
-        self.frontier=[]
+        self.frontier=[] #array to store Node instances
 
     def add(self,node):
 
-        self.frontier.append(node)
+        self.frontier.append(node) 
 
     def remove(self):
 
-        if len(self.frontier==0):
+        if len(self.frontier==0): #frontier empty so all nodes explored therefore no solution
             raise Exception("No Solution")
         else:
-            node=self.frontier[-1]
+            node=self.frontier[-1] #nodes removed using stack method, i.e. first in last out
             self.frontier=self.frontier[:-1]
             return node
 
-class OptionMenu(tk.Frame): 
+class OptionMenu(tk.Frame): #dropdown list object
 
     def __init__(self, coordinates, master, status, *options):
 
@@ -40,7 +40,7 @@ class OptionMenu(tk.Frame):
         self.dropdown.pack()
         self.coordinates=coordinates
 
-    def getval(self):
+    def getval(self): #gets last value selected in dropdown list
 
         return self.status.get()
         
@@ -48,10 +48,10 @@ class Cube():
 
     def __init__(self):
 
-        self.face=numpy.full((6,3,3,),
-                             "##############"
-                             )
-        self.mappings={
+        self.face=numpy.full((6,3,3,), 
+                             "##############" #used to initialize array with enough space for each color in string format
+                             ) #array storing all faces and their arrays. 6x3x3 array 
+        self.mappings={ #dictionary to translate x,y coordinates on cube into respective position in array. 0,0 is considered square in the middle of the face 
             (0,0):(1,1),
             (0,1):(0,1),
             (0,-1):(2,1),
@@ -62,11 +62,11 @@ class Cube():
             (-1,1):(0,0),
             (-1,-1):(2,0)
         }
-        self.actions=[]
+        self.actions=[] #actions array storing a list of all previous actions called on the cube. Once a goal state is reached, there will be no need to backtrace, rather all actions will already be present in the goal state and can be displayed
 
-    def WriteToFace(self,facenum,row,column,value):
+    def WriteToFace(self,facenum,row,column,value): 
 
-        self.face[facenum][row][column]=value
+        self.face[facenum][row][column]=value #the array contents are referenced in the following manner: [face][row][column]
 
     def GetValue(self,fnum,row,column):
 
@@ -74,15 +74,15 @@ class Cube():
 
     def GetFace(self,num):
 
-        return self.face[num]
+        return self.face[num] #returns 2 dimensional array of specified face number
 
-    def GetAllFaces(self):
+    def GetAllFaces(self): #basically returns entire cube array
 
         return self.face
 
-    def ClockWise(self,facenumber):
+    def ClockWise(self,facenumber): #gets new value of face after rotating it clockwise
 
-        f=numpy.full((3,3),"#############")
+        f=numpy.full((3,3),"#############") #reason numpy.full is used is because using vanilla python arrays causes all faces to be overwritten when changing an individual face
         for y in range(-1,2):
             for x in range(-1,2):
                 xy=self.mappings[(x,y)]
@@ -93,9 +93,9 @@ class Cube():
                 r2=xy_[0]
                 c2=xy_[1]
                 f[r2][c2]=self.face[facenumber][r][c]
-        return copy.deepcopy(f)
+        return copy.deepcopy(f) #deepcopy is used as in case of arrays usually a reference is assigned to the original array causing messy memory issues. So a function is used to copy the array
 
-    def AntiClockWise(self,facenumber):
+    def AntiClockWise(self,facenumber): #gets new value of face after rotating it anti-clockwise
 
         f=numpy.full((3,3),"#############")
         for y in range(-1,2):
@@ -110,22 +110,22 @@ class Cube():
                 f[r2][c2]=self.face[facenumber][r][c]
         return copy.deepcopy(f)
 
-    def U(self):
+    def U(self): #this is a clockwise notation function. 
 
-        newface=copy.deepcopy(self.face)
-        newface[0][0]=self.face[3][0]
-        newface[4][0]=self.face[0][0]
+        newface=copy.deepcopy(self.face) #as seen in this case had the array been assigned normally like newface=self.face ; it would simply assign a reference to self.face, therefore changes to newface would invariably lead to changes to self.face
+        newface[0][0]=self.face[3][0] # for each movement, there are certain changes where universal logic cannot easily be applied, such as the exchanging of rows or columns between faces. In this case each row or column has to individually be assigned to its new face
+        newface[4][0]=self.face[0][0] # in this case it was a horizontal movement in reference to face0 so only rows were swapped
         newface[5][0]=self.face[4][0]
         newface[3][0]=self.face[5][0]
-        newface[1]=self.ClockWise(1)
+        newface[1]=self.ClockWise(1) 
         self.face=copy.deepcopy(newface)
-        self.actions.append("U")
+        self.actions.append("U") #appends the notation used to the actions array
 
     def L(self):
 
         newface=copy.deepcopy(self.face)
         for i in range(0,3):
-            newface[0][i][0]=self.face[1][i][0]
+            newface[0][i][0]=self.face[1][i][0] #in this case columns had to be swapped, so different logic had to be applied
             newface[1][i][0]=self.face[5][i][0]
             newface[2][i][0]=self.face[0][i][0]
             newface[5][i][0]=self.face[2][i][0]
@@ -151,7 +151,7 @@ class Cube():
 
         self.actions.append("D")
 
-    def U_(self):
+    def U_(self): #all notation functions ending with _ are anticlockwise rotations
 
         self.actions.append("U`")
 
@@ -177,12 +177,11 @@ class Cube():
 
 def GetInput(CubeObject):
 
-    faces=[None]*6
-    FaceArray=[[["","",""],["","",""],["","",""]]]*6
+    faces=[None]*6 #similar to faces array in Cube instance yet will be filled with color array of instances of OptionMenu. Will be a 6x9 array. Rows and Columns are not regarded here. Order is from left to right, up to down
     for fn in range(0,6):
-        Window=tk.Tk()
+        Window=tk.Tk() #initializes gui to choose colors, new window for each face
         Window.title("Face "+str(fn))
-        color=[OptionMenu((0,0),
+        color=[OptionMenu((0,0), 
                           Window,
                           "white",
                           "white",
@@ -196,7 +195,7 @@ def GetInput(CubeObject):
         i=0
         for r in range(3):
             for c in range(3):
-                color[i]=OptionMenu((r,c),
+                color[i]=OptionMenu((r,c), #row and column number of color 
                                     Window,
                                     "white",
                                     "white",
@@ -211,14 +210,14 @@ def GetInput(CubeObject):
                               )
                 i=i+1
         button = tk.Button(text = "Submit",
-                           command = lambda: Window.destroy()
+                           command = lambda: Window.destroy() #button to close window
                            )
         button.grid(row=4,
                     column=1
                     )
         Window.mainloop()
-        faces[fn]=color
-    for f in range(0,6):
+        faces[fn]=color #current face is set to color array of current face
+    for f in range(0,6): #takes the value from each dropdown menu and assigns to its respective position on the cube
         count=0
         for x in range(0,3):
             for y in range(0,3):
@@ -230,7 +229,7 @@ def GetInput(CubeObject):
                 count=count+1
     return CubeObject
 
-def Heuristic(CubeState):
+def Heuristic(CubeState): #returns a score based on how many faces are solved. Currently not intelligent, merely to check if goal state has been achieved
 
     score=0
 
@@ -248,9 +247,6 @@ def Heuristic(CubeState):
 
 c=Cube()
 c=GetInput(c)
-print(Heuristic(c))
-
-
 
 
         
