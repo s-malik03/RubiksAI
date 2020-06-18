@@ -230,11 +230,25 @@ def GetInput(CubeObject):
                 count=count+1
     return CubeObject
 
+def Heuristic(CubeState):
+
+    score=0
+
+    for CubeFace in CubeState.face:
+
+        cmp1=CubeFace[0]==CubeFace[1]
+
+        cmp2=CubeFace[1]==CubeFace[2]
+
+        if cmp1.all() and cmp2.all():
+
+            score=score+1
+
+    return score    
+
 c=Cube()
 c=GetInput(c)
-c.U()
-for x in range(0,6):
-    print(c.GetFace(x))
+print(Heuristic(c))
 
 
 
