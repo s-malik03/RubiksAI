@@ -232,18 +232,65 @@ def GetInput(CubeObject):
 def Heuristic(CubeState): #returns a score based on how many faces are solved. Currently not intelligent, merely to check if goal state has been achieved
 
     score=0
-
     for CubeFace in CubeState.face:
-
         cmp1=CubeFace[0]==CubeFace[1]
-
         cmp2=CubeFace[1]==CubeFace[2]
-
         if cmp1.all() and cmp2.all():
-
             score=score+1
+    return score
 
-    return score    
+def Solve(CubeObj):
+
+    stack=Frontier() #initialize frontier
+    stack.add( #add initial state to frontier
+        Node(CubeObj,none)
+        )
+
+    while(len(stack.frontier)!=0):
+
+        current_node=stack.remove() #remove last node from frontier
+        if(len(current_node.state.actions)>25):
+            current_node=stack.remove() #if more than 25 moves have been done on the Cube state then discard this state and remove next state from frontier
+        if(Heuristic(current_node.state)==6): #if goal state has been reached, return node state
+            return current_node.state
+        else: #add further nodes to frontier after applying actions
+            stack.add(
+                Node(current_node.state.U(),current_node)
+                )
+            stack.add(
+                Node(current_node.state.L(),current_node)
+                )
+            stack.add(
+                Node(current_node.state.F(),current_node)
+                )
+            stack.add(
+                Node(current_node.state.R(),current_node)
+                )
+            stack.add(
+                Node(current_node.state.B(),current_node)
+                )
+            stack.add(
+                Node(current_node.state.D(),current_node)
+                )
+            stack.add(
+                Node(current_node.state.U_(),current_node)
+                )
+            stack.add(
+                Node(current_node.state.L_(),current_node)
+                )
+            stack.add(
+                Node(current_node.state.F_(),current_node)
+                )
+            stack.add(
+                Node(current_node.state.R_(),current_node)
+                )
+            stack.add(
+                Node(current_node.state.B_(),current_node)
+                )
+            stack.add(
+                Node(current_node.state.D_(),current_node)
+                )
+
 
 c=Cube()
 c=GetInput(c)
