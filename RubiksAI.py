@@ -294,6 +294,10 @@ def Solve(CubeObj):
 
 c=Cube()
 c=GetInput(c)
+S=Solve(c)
+print("Actions required to solve:")
+for a in S.actions:
+    print(a)
 
 
         
