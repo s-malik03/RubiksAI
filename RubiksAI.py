@@ -252,6 +252,7 @@ def Solve(CubeObj):
             current_node=stack.remove() #if more than 25 moves have been done on the Cube state then discard this state and remove next state from frontier
         if(Heuristic(current_node.state)==6): #if goal state has been reached, return node state
             solution=current_node.state #temporary solution
+            optimal=len(current_node.state.actions)
         else: #add further nodes to frontier after applying actions
             stack.add(
                 Node(current_node.state.U(),current_node)
