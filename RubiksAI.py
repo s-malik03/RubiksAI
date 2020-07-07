@@ -18,7 +18,7 @@ class Frontier(): #to store all nodes to be explored
 
     def add(self,node):
 
-        self.frontier.append(node) 
+        self.frontier.append(node)
 
     def remove(self):
 
@@ -33,7 +33,7 @@ class OptionMenu(tk.Frame): #dropdown list object
 
     def __init__(self, coordinates, master, status, *options):
 
-        super().__init__(master) 
+        super().__init__(master)
         self.status = tk.StringVar()
         self.status.set(status)
         self.dropdown = tk.OptionMenu(self, self.status, *options)
@@ -43,15 +43,15 @@ class OptionMenu(tk.Frame): #dropdown list object
     def getval(self): #gets last value selected in dropdown list
 
         return self.status.get()
-        
+
 class Cube():
 
     def __init__(self):
 
-        self.face=numpy.full((6,3,3,), 
+        self.face=numpy.full((6,3,3,),
                              "##############" #used to initialize array with enough space for each color in string format
-                             ) #array storing all faces and their arrays. 6x3x3 array 
-        self.mappings={ #dictionary to translate x,y coordinates on cube into respective position in array. 0,0 is considered square in the middle of the face 
+                             ) #array storing all faces and their arrays. 6x3x3 array
+        self.mappings={ #dictionary to translate x,y coordinates on cube into respective position in array. 0,0 is considered square in the middle of the face
             (0,0):(1,1),
             (0,1):(0,1),
             (0,-1):(2,1),
@@ -64,7 +64,7 @@ class Cube():
         }
         self.actions=[] #actions array storing a list of all previous actions called on the cube. Once a goal state is reached, there will be no need to backtrace, rather all actions will already be present in the goal state and can be displayed
 
-    def WriteToFace(self,facenum,row,column,value): 
+    def WriteToFace(self,facenum,row,column,value):
 
         self.face[facenum][row][column]=value #the array contents are referenced in the following manner: [face][row][column]
 
@@ -110,14 +110,14 @@ class Cube():
                 f[r2][c2]=self.face[facenumber][r][c]
         return copy.deepcopy(f)
 
-    def U(self): #this is a clockwise notation function. 
+    def U(self): #this is a clockwise notation function.
 
         newface=copy.deepcopy(self.face) #as seen in this case had the array been assigned normally like newface=self.face ; it would simply assign a reference to self.face, therefore changes to newface would invariably lead to changes to self.face
         newface[0][0]=self.face[3][0] # for each movement, there are certain changes where universal logic cannot easily be applied, such as the exchanging of rows or columns between faces. In this case each row or column has to individually be assigned to its new face
         newface[4][0]=self.face[0][0] # in this case it was a horizontal movement in reference to face0 so only rows were swapped
         newface[5][0]=self.face[4][0]
         newface[3][0]=self.face[5][0]
-        newface[1]=self.ClockWise(1) 
+        newface[1]=self.ClockWise(1)
         self.face=copy.deepcopy(newface)
         self.actions.append("U") #appends the notation used to the actions array
 
@@ -136,9 +136,13 @@ class Cube():
     def F(self):
 
         newface[0]=self.ClockWise(0)
-        #incomplete: needs changes to other faces
+        for i in range(0,3):
+            newface[1][1][i] = self.face[3][i][1]
+            newface[3][i][1] = self.face[2][1][i]
+            newface[2][1][i] = self.face[4][i][1]
+            newface[4][i][1] = self.face[2][1][i]
         self.actions.append("F")
-
+        #not done
     def R(self):
 
         self.actions.append("R")
@@ -160,9 +164,13 @@ class Cube():
         self.actions.append("L`")
 
     def F_(self):
-
+        for i in range():
+            newface[1][1][i] = self.face[4][i][1]
+            newface[1][i][1] = self.face[5][1][i]
+            newface[5][1][i] = self.face[2][i][1]
+            newface[2][i][1] = self.face[4][1][i]
         self.actions.append("F`")
-
+        #not done
     def R_(self):
 
         self.actions.append("R`")
@@ -181,7 +189,7 @@ def GetInput(CubeObject):
     for fn in range(0,6):
         Window=tk.Tk() #initializes gui to choose colors, new window for each face
         Window.title("Face "+str(fn))
-        color=[OptionMenu((0,0), 
+        color=[OptionMenu((0,0),
                           Window,
                           "white",
                           "white",
@@ -195,7 +203,7 @@ def GetInput(CubeObject):
         i=0
         for r in range(3):
             for c in range(3):
-                color[i]=OptionMenu((r,c), #row and column number of color 
+                color[i]=OptionMenu((r,c), #row and column number of color
                                     Window,
                                     "white",
                                     "white",
@@ -298,6 +306,3 @@ S=Solve(c)
 print("Actions required to solve:")
 for a in S.actions:
     print(a)
-
-
-        
