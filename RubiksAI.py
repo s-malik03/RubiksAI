@@ -137,10 +137,10 @@ class Cube():
 
         newface[0]=self.ClockWise(0)
         for i in range(0,3):
-            newface[1][1][i] = self.face[3][i][1]
-            newface[3][i][1] = self.face[2][1][i]
-            newface[2][1][i] = self.face[4][i][1]
-            newface[4][i][1] = self.face[2][1][i]
+            newface[1][2][i] = self.face[3][i][0]
+            newface[3][i][0] = self.face[2][0][i]
+            newface[2][0][i] = self.face[4][i][2]
+            newface[4][i][2] = self.face[1][2][i]
         self.actions.append("F")
         #not done
     def R(self):
@@ -163,8 +163,12 @@ class Cube():
 
         self.actions.append("L`")
 
-    def F_(self,facenumber):
-        AntiClockWise(self,facenumber)
+    def F_(self):
+        for i in range(0,3):
+            newface[1][2][i] = self.face[4][i][2]
+            newface[4][i][2] = self.face[2][0][i]
+            newface[2][0][i] = self.face[3][i][0]
+            newface[3][i][0] = self.face[1][2][i]
         self.actions.append("F`")
         #not done
     def R_(self):
