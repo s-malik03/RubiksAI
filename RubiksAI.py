@@ -163,12 +163,8 @@ class Cube():
 
         self.actions.append("L`")
 
-    def F_(self):
-        for i in range():
-            newface[1][1][i] = self.face[4][i][1]
-            newface[1][i][1] = self.face[5][1][i]
-            newface[5][1][i] = self.face[2][i][1]
-            newface[2][i][1] = self.face[4][1][i]
+    def F_(self,facenumber):
+        AntiClockWise(self,facenumber)
         self.actions.append("F`")
         #not done
     def R_(self):
