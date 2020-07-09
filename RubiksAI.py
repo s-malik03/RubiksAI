@@ -140,7 +140,7 @@ class Cube():
             newface[3][i][0] = self.face[2][0][i]
             newface[2][0][i] = self.face[4][i][2]
             newface[4][i][2] = self.face[1][2][i]
-        newface[0]=self.ClockWise(face)
+        newface[0]=self.ClockWise(0)
         self.face=copy.deepcopy(newface)
         self.actions.append("F")
         #not done
@@ -178,7 +178,7 @@ class Cube():
             newface[4][i][2] = self.face[2][0][i]
             newface[2][0][i] = self.face[3][i][0]
             newface[3][i][0] = self.face[1][2][i]
-        newface[0] = self.AntiClockWise(face)
+        newface[0] = self.AntiClockWise(0)
         self.face=copy.deepcopy(newface)
         self.actions.append("F`")
         #not done
