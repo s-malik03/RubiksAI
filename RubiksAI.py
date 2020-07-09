@@ -154,14 +154,36 @@ class Cube():
 
     def D(self):
 
+        newface=copy.deepcopy(self.face) #as seen in this case had the array been assigned normally like newface=self.face ; it would simply assign a reference to self.face, therefore changes to newface would invariably lead to changes to self.face
+        newface[4][2]=self.face[5][2] # for each movement, there are certain changes where universal logic cannot easily be applied, such as the exchanging of rows or columns between faces. In this case each row or column has to individually be assigned to its new face
+        newface[0][2]=self.face[4][2]
+        newface[5][2]=self.face[3][2]
+        newface[3][2]=self.face[0][2]
+        newface[2]=self.ClockWise(2)
+        self.face=copy.deepcopy(newface)
         self.actions.append("D")
 
     def U_(self): #all notation functions ending with _ are anticlockwise rotations
 
+        newface=copy.deepcopy(self.face) #as seen in this case had the array been assigned normally like newface=self.face ; it would simply assign a reference to self.face, therefore changes to newface would invariably lead to changes to self.face
+        newface[3][0]=self.face[0][0] # for each movement, there are certain changes where universal logic cannot easily be applied, such as the exchanging of rows or columns between faces. In this case each row or column has to individually be assigned to its new face
+        newface[0][0]=self.face[4][0]
+        newface[4][0]=self.face[5][0]
+        newface[5][0]=self.face[3][0]
+        newface[1]=self.AntiClockWise(1)
+        self.face=copy.deepcopy(newface)
         self.actions.append("U`")
 
     def L_(self):
 
+        newface=copy.deepcopy(self.face)
+        for i in range(0,3):
+            newface[1][i][0]=self.face[0][i][0] #in this case columns had to be swapped, so different logic had to be applied
+            newface[5][i][0]=self.face[1][i][0]
+            newface[0][i][0]=self.face[2][i][0]
+            newface[2][i][0]=self.face[5][i][0]
+        newface[4]=self.AntiClockwise(4)
+        self.face=copy.deepcopy(newface)
         self.actions.append("L`")
 
     def F_(self):
