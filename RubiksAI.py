@@ -214,6 +214,13 @@ class Cube():
 
     def D_(self):
 
+        newface=copy.deepcopy(self.face) #as seen in this case had the array been assigned normally like newface=self.face ; it would simply assign a reference to self.face, therefore changes to newface would invariably lead to changes to self.face
+        newface[0][2]=self.face[3][2] # for each movement, there are certain changes where universal logic cannot easily be applied, such as the exchanging of rows or columns between faces. In this case each row or column has to individually be assigned to its new face
+        newface[4][2]=self.face[0][2] # in this case it was a horizontal movement in reference to face0 so only rows were swapped
+        newface[5][2]=self.face[4][2]
+        newface[3][2]=self.face[5][2]
+        newface[2]=self.AntiClockWise(2)
+        self.face=copy.deepcopy(newface)
         self.actions.append("D`")
 
 def GetInput(CubeObject):
