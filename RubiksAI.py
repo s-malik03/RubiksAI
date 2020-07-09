@@ -205,8 +205,15 @@ class Cube():
         self.actions.append("F`")
         #not done
     def R_(self):
-
-        self.actions.append("R`")
+        newface=copy.deepcopy(self.face) #as seen in this case had the array been assigned normally like newface=self.face ; it would simply assign a reference to self.face, therefore changes to newface would invariably lead to changes to self.face
+        for i in range(0,3):
+            newface[0][i][2]=self.face[2][i][2] # for each movement, there are certain changes where universal logic cannot easily be applied, such as the exchanging of rows or columns between faces. In this case each row or column has to individually be assigned to its new face
+            newface[2][i][2]=self.face[5][i][0]
+            newface[5][i][0]=self.face[1][i][2]
+            newface[1][i][2]=self.face[0][i][2]
+            newface[3]=self.AntiClockWise(3)
+            self.face=copy.deepcopy(newface)
+            self.actions.append("R`")
 
     def B_(self):
 
