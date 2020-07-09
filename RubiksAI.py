@@ -22,11 +22,11 @@ class Frontier(): #to store all nodes to be explored
 
     def remove(self):
 
-        if len(self.frontier==0): #frontier empty so all nodes explored therefore no solution
+        if len(self.frontier)==0: #frontier empty so all nodes explored therefore no solution
             raise Exception("No Solution")
         else:
-            node=self.frontier[-1] #nodes removed using stack method, i.e. first in last out
-            self.frontier=self.frontier[:-1]
+            node=self.frontier[0] #nodes removed using stack method, i.e. first in last out
+            self.frontier=self.frontier[1:]
             return node
 
 class OptionMenu(tk.Frame): #dropdown list object
