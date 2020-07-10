@@ -156,7 +156,13 @@ class Cube():
         self.actions.append("R")
 
     def B(self):
-
+        for i in range(0,3):
+            newface[1][0][i] = self.face[3][i][2]
+            newface[3][i][2] = self.face[2][2][i]
+            newface[2][2][i] = self.face[4][i][0]
+            newface[4][i][0] = self.face[1][0][i]
+        newface[5] = self.ClockWise(5)
+        self.face = copy.deepcopy(newface)
         self.actions.append("B")
 
     def D(self):
@@ -216,7 +222,13 @@ class Cube():
             self.actions.append("R`")
 
     def B_(self):
-
+        for i in range(0,3):
+            newface[1][0][i] = self.face[4][i][0]
+            newface[4][i][0] = self.face[2][2][i]
+            newface[2][2][i] = self.face[3][i][2]
+            newface[3][i][2] = self.face[1][0][i]
+        newface[5] = self.AntiClockWise(5)    
+        self.face = copy.deepcopy(newface)
         self.actions.append("B`")
 
     def D_(self):
