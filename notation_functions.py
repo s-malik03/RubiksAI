@@ -1,3 +1,8 @@
+import copy
+
+
+
+
 class Cube():
 
     def __init__(self):
@@ -64,7 +69,7 @@ class Cube():
                 f[r2][c2]=self.face[facenumber][r][c]
         return copy.deepcopy(f)
 
-    def U(self): 
+    def U(self):
 
         newface=copy.deepcopy(self.face)
         newface[0][0]=self.face[3][0]
