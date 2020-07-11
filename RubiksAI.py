@@ -3,6 +3,7 @@ from array import *
 import numpy
 import copy
 from notation_functions import Cube
+import os
 
 class Node(): #to contain current state and parent state
 
@@ -133,8 +134,12 @@ def Solve(CubeObj):
         )
     optimal=25
     i=0
+    nodes_explored=0
     while(len(stack.frontier)!=0):
         current_node=stack.remove() #remove last node from frontier
+        nodes_explored+=1
+        os.system("cls")
+        print("Nodes explored:"+ str(nodes_explored))
         if(len(current_node.state.actions)>optimal):
             current_node=stack.remove() #if more than 25 moves have been done on the Cube state then discard this state and remove next state from frontier
         if(Heuristic(current_node.state)==6): #if goal state has been reached, return node state
