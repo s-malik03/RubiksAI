@@ -107,7 +107,7 @@ def Heuristic(CubeState): #returns a score based on how many faces are solved. C
     for CubeFace in CubeState.face:
         cmp1=CubeFace[0]==CubeFace[1]
         cmp2=CubeFace[1]==CubeFace[2]
-        if cmp1.all() and cmp2.all():
+        if cmp1 and cmp2:
             score=score+1
     return score
 
@@ -126,9 +126,9 @@ def Solve(CubeObj):
             solution=current_node.state #temporary solution
             optimal=len(current_node.state.actions)
         else: #add further nodes to frontier after applying actions
-            stack.add(
-                Node(current_node.state.U(),current_node)
-                )
+            #stack.add(
+                #Node(current_node.state.U(),current_node)
+                #)
             stack.add(
                 Node(current_node.state.L(),current_node)
                 )
@@ -165,9 +165,33 @@ def Solve(CubeObj):
     return solution #optimal solution after all nodes explored
 
 c=Cube()
-c=GetInput(c)
+#c=GetInput(c)
+c.face=[[['green', 'blue', 'orange'],
+  ['blue', 'yellow', 'blue'],
+  ['blue', 'red', 'red']],
+
+ [['white', 'yellow', 'green'],
+  ['white', 'blue', 'orange'],
+  ['orange', 'orange', 'white']],
+
+ [['red', 'yellow', 'yellow'],
+  ['white', 'green', 'yellow'],
+  ['orange', 'green', 'red']],
+
+ [['green', 'yellow', 'red'],
+  ['white', 'orange', 'green'],
+  ['blue', 'green', 'yellow']],
+
+ [['orange', 'green', 'yellow'],
+  ['red', 'red', 'red'],
+  ['blue', 'orange', 'white']],
+
+ [['white', 'blue', 'blue'],
+  ['red', 'white', 'white'],
+  ['green', 'orange', 'yellow']]],
+print(c.face)
 S=Solve(c)
 print("Actions required to solve:")
 for a in S.actions:
     print(a)
-input("press any key to continue")
+a=input("press any key to continue")
