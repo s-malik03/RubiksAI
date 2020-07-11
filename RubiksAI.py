@@ -115,7 +115,7 @@ def Solve(CubeObj):
 
     stack=Frontier() #initialize frontier
     stack.add( #add initial state to frontier
-        Node(CubeObj,none)
+        Node(CubeObj,None)
         )
     optimal=25
     while(len(stack.frontier)!=0):
