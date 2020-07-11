@@ -170,3 +170,4 @@ S=Solve(c)
 print("Actions required to solve:")
 for a in S.actions:
     print(a)
+input("press any key to continue")
