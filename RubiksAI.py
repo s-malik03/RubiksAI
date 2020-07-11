@@ -2,6 +2,7 @@ import tkinter as tk
 from array import *
 import numpy
 import copy
+from notation_functions import Cube
 
 class Node(): #to contain current state and parent state
 

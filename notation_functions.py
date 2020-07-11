@@ -3,9 +3,6 @@ from array import *
 import numpy
 import copy
 
-
-
-
 class Cube():
 
     def __init__(self):
@@ -194,4 +191,11 @@ class Cube():
 
     def D_(self):
 
+        newface=copy.deepcopy(self.face)
+        newface[4][2]=self.face[0][2]
+        newface[0][2]=self.face[3][2]
+        newface[5][2]=self.face[4][2]
+        newface[3][2]=self.face[5][2]
+        newface[2]=self.AntiClockWise(2)
+        self.face=copy.deepcopy(newface)
         self.actions.append("D`")
