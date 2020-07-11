@@ -69,7 +69,17 @@ class Cube():
                 f[r2][c2]=self.face[facenumber][r][c]
         return copy.deepcopy(f)
 
+    def U(self):
 
+        newface=copy.deepcopy(self.face)
+        print("hello")
+        newface[0][0]=self.face[3][0]
+        newface[4][0]=self.face[0][0]
+        newface[5][0]=self.face[4][0]
+        newface[3][0]=self.face[5][0]
+        newface[1]=self.ClockWise(1)
+        self.face=copy.deepcopy(newface)
+        self.actions.append("U")
 
     def L(self):
 
