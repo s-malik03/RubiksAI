@@ -1,3 +1,6 @@
+import tkinter as tk
+from array import *
+import numpy
 import copy
 
 
