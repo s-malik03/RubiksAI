@@ -6,10 +6,9 @@ from notation_functions import Cube
 
 class Node(): #to contain current state and parent state
 
-    def __init__(self,state,parent):
+    def __init__(self,state):
 
         self.state=state
-        self.parent=parent
 
 class Frontier(): #to store all nodes to be explored
 
@@ -101,23 +100,39 @@ def GetInput(CubeObject):
                 count=count+1
     return CubeObject
 
-def Heuristic(CubeState): #returns a score based on how many faces are solved. Currently not intelligent, merely to check if goal state has been achieved
+def HeuristicOld(CubeState): #returns a score based on how many faces are solved. Currently not intelligent, merely to check if goal state has been achieved
 
     score=0
     for CubeFace in CubeState.face:
+        print(CubeFace)
         cmp1=CubeFace[0]==CubeFace[1]
         cmp2=CubeFace[1]==CubeFace[2]
-        if cmp1 and cmp2:
+        if cmp1.all() and cmp2.all():
             score=score+1
     return score
+
+def Heuristic(CubeState):
+
+    total_score=0
+    face_score=0
+    for CubeFace in CubeState.face:
+        check=CubeFace[0][0]
+        for Row in CubeFace:
+            for Col in Row:
+                if Col==check:
+                    face_score+=1
+        if face_score==9:
+            total_score+=1
+    return total_score
 
 def Solve(CubeObj):
 
     stack=Frontier() #initialize frontier
     stack.add( #add initial state to frontier
-        Node(CubeObj,None)
+        Node(CubeObj)
         )
     optimal=25
+    i=0
     while(len(stack.frontier)!=0):
         current_node=stack.remove() #remove last node from frontier
         if(len(current_node.state.actions)>optimal):
@@ -126,41 +141,41 @@ def Solve(CubeObj):
             solution=current_node.state #temporary solution
             optimal=len(current_node.state.actions)
         else: #add further nodes to frontier after applying actions
-            #stack.add(
-                #Node(current_node.state.U(),current_node)
-                #)
             stack.add(
-                Node(current_node.state.L(),current_node)
+                Node(current_node.state.U() )
                 )
             stack.add(
-                Node(current_node.state.F(),current_node)
+                Node(current_node.state.L() )
                 )
             stack.add(
-                Node(current_node.state.R(),current_node)
+                Node(current_node.state.F() )
                 )
             stack.add(
-                Node(current_node.state.B(),current_node)
+                Node(current_node.state.R() )
                 )
             stack.add(
-                Node(current_node.state.D(),current_node)
+                Node(current_node.state.B() )
                 )
             stack.add(
-                Node(current_node.state.U_(),current_node)
+                Node(current_node.state.D() )
                 )
             stack.add(
-                Node(current_node.state.L_(),current_node)
+                Node(current_node.state.U_() )
                 )
             stack.add(
-                Node(current_node.state.F_(),current_node)
+                Node(current_node.state.L_() )
                 )
             stack.add(
-                Node(current_node.state.R_(),current_node)
+                Node(current_node.state.F_() )
                 )
             stack.add(
-                Node(current_node.state.B_(),current_node)
+                Node(current_node.state.R_() )
                 )
             stack.add(
-                Node(current_node.state.D_(),current_node)
+                Node(current_node.state.B_() )
+                )
+            stack.add(
+                Node(current_node.state.D_() )
                 )
     return solution #optimal solution after all nodes explored
 
@@ -188,8 +203,7 @@ c.face=[[['green', 'blue', 'orange'],
 
  [['white', 'blue', 'blue'],
   ['red', 'white', 'white'],
-  ['green', 'orange', 'yellow']]],
-print(c.face)
+  ['green', 'orange', 'yellow']]]
 S=Solve(c)
 print("Actions required to solve:")
 for a in S.actions:
