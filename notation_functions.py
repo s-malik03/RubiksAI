@@ -86,9 +86,9 @@ class Cube():
         newface=copy.deepcopy(self.face)
         for i in range(0,3):
             newface[0][i][0]=self.face[1][i][0]
-            newface[1][i][0]=self.face[5][i][0]
+            newface[1][i][0]=self.face[5][i][2]
             newface[2][i][0]=self.face[0][i][0]
-            newface[5][i][0]=self.face[2][i][0]
+            newface[5][i][2]=self.face[2][i][0]
         newface[4]=self.ClockWise(4)
         self.face=copy.deepcopy(newface)
         self.actions.append("L")
@@ -97,10 +97,10 @@ class Cube():
     def F(self):
         newface=copy.deepcopy(self.face)
         for i in range(0,3):
-            newface[1][2][i] = self.face[3][i][0]
-            newface[3][i][0] = self.face[2][0][i]
-            newface[2][0][i] = self.face[4][i][2]
-            newface[4][i][2] = self.face[1][2][i]
+            newface[1][2][i] = self.face[4][i][2]
+            newface[4][i][2] = self.face[2][0][i]
+            newface[2][0][i] = self.face[3][i][0]
+            newface[3][i][0] = self.face[1][2][i]
         newface[0]=self.ClockWise(0)
         self.face=copy.deepcopy(newface)
         self.actions.append("F")
@@ -109,10 +109,10 @@ class Cube():
     def R(self):
         newface=copy.deepcopy(self.face)
         for i in range(0,3):
-            newface[0][i][2] = self.face[1][i][2]
-            newface[1][i][2] = self.face[5][i][0]
-            newface[5][i][0] = self.face[2][i][2]
-            newface[2][i][2] = self.face[0][i][i]
+            newface[0][i][2] = self.face[2][i][2]
+            newface[2][i][2] = self.face[5][i][0]
+            newface[5][i][0] = self.face[1][i][2]
+            newface[1][i][2] = self.face[0][i][2]
         newface[3]=self.ClockWise(3)
         self.face = copy.deepcopy(newface)
         self.actions.append("R")
@@ -159,9 +159,9 @@ class Cube():
         newface=copy.deepcopy(self.face)
         for i in range(0,3):
             newface[1][i][0]=self.face[0][i][0]
-            newface[5][i][0]=self.face[1][i][0]
+            newface[5][i][2]=self.face[1][i][0]
             newface[0][i][0]=self.face[2][i][0]
-            newface[2][i][0]=self.face[5][i][0]
+            newface[2][i][0]=self.face[5][i][2]
         newface[4]=self.AntiClockWise(4)
         self.face=copy.deepcopy(newface)
         self.actions.append("L`")
@@ -170,10 +170,10 @@ class Cube():
     def F_(self):
         newface=copy.deepcopy(self.face)
         for i in range(0,3):
-            newface[1][2][i] = self.face[4][i][2]
-            newface[4][i][2] = self.face[2][0][i]
-            newface[2][0][i] = self.face[3][i][0]
-            newface[3][i][0] = self.face[1][2][i]
+            newface[1][2][i] = self.face[3][i][0]
+            newface[3][i][0] = self.face[2][0][i]
+            newface[2][0][i] = self.face[4][i][2]
+            newface[4][i][2] = self.face[1][2][i]
         newface[0] = self.AntiClockWise(0)
         self.face=copy.deepcopy(newface)
         self.actions.append("F`")
@@ -182,10 +182,11 @@ class Cube():
     def R_(self):
         newface=copy.deepcopy(self.face)
         for i in range(0,3):
-            newface[0][i][2]=self.face[2][i][2]
-            newface[5][i][0]=self.face[1][i][2]
-            newface[1][i][2]=self.face[0][i][2]
-            newface[3]=self.AntiClockWise(3)
+            newface[0][i][2]=self.face[1][i][2]
+            newface[1][i][2]=self.face[5][i][0]
+            newface[5][i][0]=self.face[2][i][2]
+            newface[2][i][2]=self.face[0][i][2]
+        newface[3]=self.AntiClockWise(3)
         self.face=copy.deepcopy(newface)
         self.actions.append("R`")
         return self

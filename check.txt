@@ -1,0 +1,16 @@
+U             - works
+U'            - works
+L             - works
+L'            - works
+F             - works
+F'            - works
+B             - works
+B'            - works
+D             - works
+D'            - works
+R             - works
+R'            - works
+
+
+Clockwise     - works
+AntiClockWise - works
