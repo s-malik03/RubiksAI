@@ -5,9 +5,14 @@ import copy
 
 class Cube():
 
-    def __init__(self):
+    def __init__(self,face=None,actions=None):
 
-        self.face=numpy.full((6,3,3,),
+        if face!=None:
+
+            self.face=face
+
+        else:
+            self.face=numpy.full((6,3,3,),
                              "##############" #used to initialize array with enough space for each color in string format
                              ) #array storing all faces and their arrays. 6x3x3 array
         self.mappings={ #dictionary to translate x,y coordinates on cube into respective position in array. 0,0 is considered square in the middle of the face
@@ -21,7 +26,11 @@ class Cube():
             (-1,1):(0,0),
             (-1,-1):(2,0)
         }
-        self.actions=[] #actions array storing a list of all previous actions called on the cube. Once a goal state is reached, there will be no need to backtrace, rather all actions will already be present in the goal state and can be displayed
+
+        if actions==None:
+            self.actions=[] #actions array storing a list of all previous actions called on the cube. Once a goal state is reached, there will be no need to backtrace, rather all actions will already be present in the goal state and can be displayed
+        else:
+            self.actions=actions
 
     def WriteToFace(self,facenum,row,column,value):
 
@@ -39,6 +48,10 @@ class Cube():
 
         return self.face
 
+    def LastAction(self):
+
+        return self.actions[-1]
+
     def ClockWise(self,facenumber): #gets new value of face after rotating it clockwise
 
         f=numpy.full((3,3),"#############") #reason numpy.full is used is because using vanilla python arrays causes all faces to be overwritten when changing an individual face
@@ -51,7 +64,7 @@ class Cube():
                 xy_=self.mappings[(y,x2)]
                 r2=xy_[0]
                 c2=xy_[1]
-                f[r2][c2]=self.face[facenumber][r][c]
+                f[r2][c2]=copy.deepcopy(self.face[facenumber][r][c])
         return copy.deepcopy(f) #deepcopy is used as in case of arrays usually a reference is assigned to the original array causing messy memory issues. So a function is used to copy the array
 
     def AntiClockWise(self,facenumber): #gets new value of face after rotating it anti-clockwise
@@ -77,9 +90,10 @@ class Cube():
         newface[5][0]=self.face[4][0]
         newface[3][0]=self.face[5][0]
         newface[1]=self.ClockWise(1)
-        self.face=copy.deepcopy(newface)
         self.actions.append("U")
-        return self
+        retobj=Cube(copy.deepcopy(newface),copy.deepcopy(self.actions))
+        self.actions=self.actions[:-1]
+        return retobj
 
     def L(self):
 
@@ -90,9 +104,10 @@ class Cube():
             newface[2][i][0]=self.face[0][i][0]
             newface[5][i][2]=self.face[2][i][0]
         newface[4]=self.ClockWise(4)
-        self.face=copy.deepcopy(newface)
         self.actions.append("L")
-        return self
+        retobj=Cube(copy.deepcopy(newface),copy.deepcopy(self.actions))
+        self.actions=self.actions[:-1]
+        return retobj
 
     def F(self):
         newface=copy.deepcopy(self.face)
@@ -102,9 +117,10 @@ class Cube():
             newface[2][0][i] = self.face[3][i][0]
             newface[3][i][0] = self.face[1][2][i]
         newface[0]=self.ClockWise(0)
-        self.face=copy.deepcopy(newface)
         self.actions.append("F")
-        return self
+        retobj=Cube(copy.deepcopy(newface),copy.deepcopy(self.actions))
+        self.actions=self.actions[:-1]
+        return retobj
 
     def R(self):
         newface=copy.deepcopy(self.face)
@@ -114,9 +130,11 @@ class Cube():
             newface[5][i][0] = self.face[1][i][2]
             newface[1][i][2] = self.face[0][i][2]
         newface[3]=self.ClockWise(3)
-        self.face = copy.deepcopy(newface)
+
         self.actions.append("R")
-        return self
+        retobj=Cube(copy.deepcopy(newface),copy.deepcopy(self.actions))
+        self.actions=self.actions[:-1]
+        return retobj
 
     def B(self):
         newface=copy.deepcopy(self.face)
@@ -126,9 +144,11 @@ class Cube():
             newface[2][2][i] = self.face[4][i][0]
             newface[4][i][0] = self.face[1][0][i]
         newface[5] = self.ClockWise(5)
-        self.face = copy.deepcopy(newface)
+
         self.actions.append("B")
-        return self
+        retobj=Cube(copy.deepcopy(newface),copy.deepcopy(self.actions))
+        self.actions=self.actions[:-1]
+        return retobj
 
     def D(self):
 
@@ -138,9 +158,11 @@ class Cube():
         newface[5][2]=self.face[3][2]
         newface[3][2]=self.face[0][2]
         newface[2]=self.ClockWise(2)
-        self.face=copy.deepcopy(newface)
+
         self.actions.append("D")
-        return self
+        retobj=Cube(copy.deepcopy(newface),copy.deepcopy(self.actions))
+        self.actions=self.actions[:-1]
+        return retobj
 
     def U_(self):
 
@@ -150,9 +172,11 @@ class Cube():
         newface[4][0]=self.face[5][0]
         newface[5][0]=self.face[3][0]
         newface[1]=self.AntiClockWise(1)
-        self.face=copy.deepcopy(newface)
+
         self.actions.append("U`")
-        return self
+        retobj=Cube(copy.deepcopy(newface),copy.deepcopy(self.actions))
+        self.actions=self.actions[:-1]
+        return retobj
 
     def L_(self):
 
@@ -163,9 +187,11 @@ class Cube():
             newface[0][i][0]=self.face[2][i][0]
             newface[2][i][0]=self.face[5][i][2]
         newface[4]=self.AntiClockWise(4)
-        self.face=copy.deepcopy(newface)
+
         self.actions.append("L`")
-        return self
+        retobj=Cube(copy.deepcopy(newface),copy.deepcopy(self.actions))
+        self.actions=self.actions[:-1]
+        return retobj
 
     def F_(self):
         newface=copy.deepcopy(self.face)
@@ -175,9 +201,11 @@ class Cube():
             newface[2][0][i] = self.face[4][i][2]
             newface[4][i][2] = self.face[1][2][i]
         newface[0] = self.AntiClockWise(0)
-        self.face=copy.deepcopy(newface)
+
         self.actions.append("F`")
-        return self
+        retobj=Cube(copy.deepcopy(newface),copy.deepcopy(self.actions))
+        self.actions=self.actions[:-1]
+        return retobj
 
     def R_(self):
         newface=copy.deepcopy(self.face)
@@ -187,9 +215,11 @@ class Cube():
             newface[5][i][0]=self.face[2][i][2]
             newface[2][i][2]=self.face[0][i][2]
         newface[3]=self.AntiClockWise(3)
-        self.face=copy.deepcopy(newface)
+
         self.actions.append("R`")
-        return self
+        retobj=Cube(copy.deepcopy(newface),copy.deepcopy(self.actions))
+        self.actions=self.actions[:-1]
+        return retobj
 
     def B_(self):
         newface=copy.deepcopy(self.face)
@@ -199,9 +229,11 @@ class Cube():
             newface[2][2][i] = self.face[3][i][2]
             newface[3][i][2] = self.face[1][0][i]
         newface[5] = self.AntiClockWise(5)
-        self.face = copy.deepcopy(newface)
+
         self.actions.append("B`")
-        return self
+        retobj=Cube(copy.deepcopy(newface),copy.deepcopy(self.actions))
+        self.actions=self.actions[:-1]
+        return retobj
 
     def D_(self):
 
@@ -211,6 +243,8 @@ class Cube():
         newface[5][2]=self.face[4][2]
         newface[3][2]=self.face[5][2]
         newface[2]=self.AntiClockWise(2)
-        self.face=copy.deepcopy(newface)
+
         self.actions.append("D`")
-        return self
+        retobj=Cube(copy.deepcopy(newface),copy.deepcopy(self.actions))
+        self.actions=self.actions[:-1]
+        return retobj
