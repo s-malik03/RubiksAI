@@ -105,6 +105,19 @@ def NewHeuristic(CubeState):
 
     total_score=0
 
+    if (
+        CubeState.face[1][0][1]==CubeState.face[1][1][1] and
+        CubeState.face[1][1][0]==CubeState.face[1][1][1] and
+        CubeState.face[1][1][2]==CubeState.face[1][1][1] and
+        CubeState.face[1][2][1]==CubeState.face[1][1][1] and
+        CubeState.face[0][0][1]==CubeState.face[0][1][1] and
+        CubeState.face[3][0][1]==CubeState.face[3][1][1] and
+        CubeState.face[4][0][1]==CubeState.face[4][1][1] and
+        CubeState.face[5][0][1]==CubeState.face[5][1][1] and
+    ):
+        total_score+=1
+
+
 def Heuristic(CubeState):
 
     total_score=0
@@ -138,7 +151,7 @@ def Solve(CubeObj):
             print("Frontier size:"+str(len(stack.frontier)))
             if(len(current_node.state.actions)>optimal):
                 current_node=stack.remove() #if more than 25 moves have been done on the Cube state then discard this state and remove next state from frontier
-            elif(Heuristic(current_node.state)==1): #if goal state has been reached, return node state
+            elif(Heuristic(current_node.state)==6): #if goal state has been reached, return node state
                 solution=current_node.state #temporary solution
                 return solution
             else: #add further nodes to frontier after applying actions
