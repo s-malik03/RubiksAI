@@ -117,6 +117,7 @@ def Heuristic(CubeState):
     total_score=0
     face_score=0
     for CubeFace in CubeState.face:
+        face_score=0
         check=CubeFace[0][0]
         for Row in CubeFace:
             for Col in Row:
@@ -135,65 +136,71 @@ def Solve(CubeObj):
     optimal=25
     i=0
     nodes_explored=0
-    while(len(stack.frontier)!=0):
-        current_node=stack.remove() #remove last node from frontier
-        nodes_explored+=1
-        os.system("cls")
-        print("Nodes explored:"+ str(nodes_explored))
-        if(len(current_node.state.actions)>optimal):
-            current_node=stack.remove() #if more than 25 moves have been done on the Cube state then discard this state and remove next state from frontier
-        elif(Heuristic(current_node.state)==6): #if goal state has been reached, return node state
-            solution=current_node.state #temporary solution
-            optimal=len(current_node.state.actions)
-        else: #add further nodes to frontier after applying actions
-            if(current_node.state.LastAction!="U"):
-                stack.add(
-                    Node(current_node.state.U() )
-                    )
-            if(current_node.state.LastAction!="L"):
-                stack.add(
-                    Node(current_node.state.L() )
-                    )
-            if(current_node.state.LastAction!="F"):
-                stack.add(
-                    Node(current_node.state.F() )
-                    )
-            if(current_node.state.LastAction!="R"):
-                stack.add(
-                    Node(current_node.state.R() )
-                    )
-            if(current_node.state.LastAction!="B"):
-                stack.add(
-                    Node(current_node.state.B() )
-                    )
-            if(current_node.state.LastAction!="D"):
-                stack.add(
-                    Node(current_node.state.D() )
-                    )
-            if(current_node.state.LastAction!="U`"):
-                stack.add(
-                    Node(current_node.state.U_() )
-                    )
-            if(current_node.state.LastAction!="L`"):
-                stack.add(
-                    Node(current_node.state.L_() )
-                    )
-            if(current_node.state.LastAction!="F`"):
-                stack.add(
-                    Node(current_node.state.F_() )
-                    )
-            if(current_node.state.LastAction!="R`"):
-                stack.add(
-                    Node(current_node.state.R_() )
-                    )
-            if(current_node.state.LastAction!="B`"):
-                stack.add(
-                    Node(current_node.state.B_() )
-                    )
-            if(current_node.state.LastAction!="D`"):
-                stack.add(
-                    Node(current_node.state.D_() )
-                    )
+    try:
+        while(len(stack.frontier)!=0):
+            current_node=stack.remove() #remove last node from frontier
+            nodes_explored+=1
+            os.system("cls")
+            print("Nodes explored:"+ str(nodes_explored))
+            print("Frontier size:"+str(len(stack.frontier)))
+            if(len(current_node.state.actions)>optimal):
+                current_node=stack.remove() #if more than 25 moves have been done on the Cube state then discard this state and remove next state from frontier
+            elif(Heuristic(current_node.state)==6): #if goal state has been reached, return node state
+                solution=current_node.state #temporary solution
+                return solution
+            else: #add further nodes to frontier after applying actions
+                if(current_node.state.LastAction!="U"):
+                    stack.add(
+                        Node(current_node.state.U() )
+                        )
+                if(current_node.state.LastAction!="L"):
+                    stack.add(
+                        Node(current_node.state.L() )
+                        )
+                if(current_node.state.LastAction!="F"):
+                    stack.add(
+                        Node(current_node.state.F() )
+                        )
+                if(current_node.state.LastAction!="R"):
+                    stack.add(
+                        Node(current_node.state.R() )
+                        )
+                if(current_node.state.LastAction!="B"):
+                    stack.add(
+                        Node(current_node.state.B() )
+                        )
+                if(current_node.state.LastAction!="D"):
+                    stack.add(
+                        Node(current_node.state.D() )
+                        )
+                if(current_node.state.LastAction!="U`"):
+                    stack.add(
+                        Node(current_node.state.U_() )
+                        )
+                if(current_node.state.LastAction!="L`"):
+                    stack.add(
+                        Node(current_node.state.L_() )
+                        )
+                if(current_node.state.LastAction!="F`"):
+                    stack.add(
+                        Node(current_node.state.F_() )
+                        )
+                if(current_node.state.LastAction!="R`"):
+                    stack.add(
+                        Node(current_node.state.R_() )
+                        )
+                if(current_node.state.LastAction!="B`"):
+                    stack.add(
+                        Node(current_node.state.B_() )
+                        )
+                if(current_node.state.LastAction!="D`"):
+                    stack.add(
+                        Node(current_node.state.D_() )
+                        )
+    except:
+        print(current_node.state.actions)
+        print(Heuristic(current_node.state))
+        print(current_node.state.face)
     return solution #optimal solution after all nodes explored
 
 c=Cube()
