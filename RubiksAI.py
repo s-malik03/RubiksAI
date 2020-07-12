@@ -26,8 +26,8 @@ class Frontier(): #to store all nodes to be explored
         if len(self.frontier)==0: #frontier empty so all nodes explored therefore no solution
             raise Exception("No Solution")
         else:
-            node=self.frontier[0] #nodes removed using stack method, i.e. first in last out
-            self.frontier=self.frontier[1:]
+            node=self.frontier[-1] #nodes removed using stack method, i.e. first in last out
+            self.frontier=self.frontier[:-1]
             return node
 
 class OptionMenu(tk.Frame): #dropdown list object
@@ -101,16 +101,9 @@ def GetInput(CubeObject):
                 count=count+1
     return CubeObject
 
-def HeuristicOld(CubeState): #returns a score based on how many faces are solved. Currently not intelligent, merely to check if goal state has been achieved
+def NewHeuristic(CubeState):
 
-    score=0
-    for CubeFace in CubeState.face:
-        print(CubeFace)
-        cmp1=CubeFace[0]==CubeFace[1]
-        cmp2=CubeFace[1]==CubeFace[2]
-        if cmp1.all() and cmp2.all():
-            score=score+1
-    return score
+    total_score=0
 
 def Heuristic(CubeState):
 
@@ -145,7 +138,7 @@ def Solve(CubeObj):
             print("Frontier size:"+str(len(stack.frontier)))
             if(len(current_node.state.actions)>optimal):
                 current_node=stack.remove() #if more than 25 moves have been done on the Cube state then discard this state and remove next state from frontier
-            elif(Heuristic(current_node.state)==6): #if goal state has been reached, return node state
+            elif(Heuristic(current_node.state)==1): #if goal state has been reached, return node state
                 solution=current_node.state #temporary solution
                 return solution
             else: #add further nodes to frontier after applying actions
@@ -198,9 +191,12 @@ def Solve(CubeObj):
                         Node(current_node.state.D_() )
                         )
     except:
+        print("Nodes explored:"+str(nodes_explored))
+        print("Frontier size"+str(len(stack.frontier)))
+        print("Heuristic score:"+str(Heuristic(current_node.state)))
         print(current_node.state.actions)
-        print(Heuristic(current_node.state))
         print(current_node.state.face)
+        pause=os.system("pause")
     return solution #optimal solution after all nodes explored
 
 c=Cube()
