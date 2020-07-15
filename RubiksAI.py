@@ -9,10 +9,11 @@ import matplotlib.pyplot as plt
 
 class Node(): #to contain current state and parent state
 
-    def __init__(self,state,number):
+    def __init__(self,state,number,parent=0):
 
         self.state=state
         self.number=number
+        self.parent=parent
 
 class Frontier(): #to store all nodes to be explored
 
@@ -29,8 +30,8 @@ class Frontier(): #to store all nodes to be explored
         if len(self.frontier)==0: #frontier empty so all nodes explored therefore no solution
             raise Exception("No Solution")
         else:
-            node=self.frontier[-1] #nodes removed using stack method, i.e. first in last out
-            self.frontier=self.frontier[:-1]
+            node=self.frontier[0] #nodes removed using stack method, i.e. first in last out
+            self.frontier=self.frontier[1:]
             return node
 
 class OptionMenu(tk.Frame): #dropdown list object
@@ -104,24 +105,45 @@ def GetInput(CubeObject):
                 count=count+1
     return CubeObject
 
-def NewHeuristic(CubeState):
+diag=[]
+
+def Heuristic(CubeState):
 
     total_score=0
 
+    CubeFace=CubeState.face
+
     if (
-        CubeState.face[1][0][1]==CubeState.face[1][1][1] and
-        CubeState.face[1][1][0]==CubeState.face[1][1][1] and
-        CubeState.face[1][1][2]==CubeState.face[1][1][1] and
-        CubeState.face[1][2][1]==CubeState.face[1][1][1] and
-        CubeState.face[0][0][1]==CubeState.face[0][1][1] and
-        CubeState.face[3][0][1]==CubeState.face[3][1][1] and
-        CubeState.face[4][0][1]==CubeState.face[4][1][1] and
-        CubeState.face[5][0][1]==CubeState.face[5][1][1]
+        CubeFace[1][0][1]==CubeFace[1][1][1] and
+        CubeFace[5][0][1]==CubeFace[5][1][1]
     ):
         total_score+=1
+        diag.append(1)
 
+    if (
+        CubeFace[1][1][0]==CubeFace[1][1][1] and
+        CubeFace[4][0][1]==CubeFace[4][1][1]
+    ):
+        total_score+=1
+        diag.append(2)
 
-def Heuristic(CubeState):
+    if (
+        CubeFace[1][1][2]==CubeFace[1][1][1] and
+        CubeFace[3][0][1]==CubeFace[3][1][1]
+    ):
+        total_score+=1
+        diag.append(3)
+
+    if (
+        CubeFace[1][2][1]==CubeFace[1][1][1] and
+        CubeFace[0][0][1]==CubeFace[0][1][1]
+    ):
+        total_score+=1
+        diag.append(4)
+
+    return total_score
+
+def OldHeuristic(CubeState):
 
     total_score=0
     face_score=0
@@ -148,111 +170,135 @@ def Solve(CubeObj):
     optimal=25
     i=0
     nodes_explored=0
+    score=0
+    min=0
     try:
         while(len(stack.frontier)!=0):
             current_node=stack.remove() #remove last node from frontier
             parent=current_node.number
-            nodes_explored+=1
+            if(Heuristic(current_node.state)>score):
+                min=len(current_node.state.actions)
+                score=Heuristic(current_node.state)
+            while(Heuristic(current_node.state)<score):
+                current_node=stack.remove() #remove last node from frontier
+                parent=current_node.number
+                if(Heuristic(current_node.state)>score):
+                    min=len(current_node.state.actions)
+                    score=Heuristic(current_node.state)
             os.system("cls")
             print("Nodes explored:"+ str(nodes_explored))
             print("Frontier size:"+str(len(stack.frontier)))
-            if(len(current_node.state.actions)>optimal):
+            print("Manhattan Distance to solution:"+str(4-score))
+            while(len(current_node.state.actions)>optimal):
                 current_node=stack.remove() #if more than 25 moves have been done on the Cube state then discard this state and remove next state from frontier
                 parent=current_node.number
-            elif(Heuristic(current_node.state)==6): #if goal state has been reached, return node state
+                while(Heuristic(current_node.state)<score and len(current_node.state.actions)<=min):
+                    current_node=stack.remove() #remove last node from frontier
+                    parent=current_node.number
+                    if(Heuristic(current_node.state)>score):
+                        min=len(current_node.state.actions)
+                        score=Heuristic(current_node.state)
+            nodes_explored+=1
+            g.add_node(current_node.number)
+            g.add_edge(current_node.parent,current_node.number)
+            if(Heuristic(current_node.state)==4): #if goal state has been reached, return node state
                 solution=current_node.state #temporary solution
+                g.add_node("S")
+                g.add_edge(current_node.parent,"S")
+                nx.draw(g,with_labels=True)
+                plt.savefig("Diagnostic.png")
                 return solution
-            else: #add further nodes to frontier after applying actions
-                if(current_node.state.LastAction!="U"):
+            else:
+                 #add further nodes to frontier after applying actions
+                if(current_node.state.LastAction()!="U`" or len(current_node.state.actions)==0):
                     node+=1
                     stack.add(
-                        Node(current_node.state.U(),node )
+                        Node(current_node.state.U(),node,parent )
                         )
-                    g.add_node(node)
-                    g.add_edge(parent,node)
-                if(current_node.state.LastAction!="L"):
+
+
+                if(current_node.state.LastAction()!="L`" or len(current_node.state.actions)==0):
                     node+=1
                     stack.add(
-                        Node(current_node.state.L(),node )
+                        Node(current_node.state.L(),node,parent )
                         )
-                    g.add_node(node)
-                    g.add_edge(parent,node)
-                if(current_node.state.LastAction!="F"):
+
+
+                if(current_node.state.LastAction()!="F`" or len(current_node.state.actions)==0):
                     node+=1
                     stack.add(
-                        Node(current_node.state.F(),node )
+                        Node(current_node.state.F(),node,parent )
                         )
-                    g.add_node(node)
-                    g.add_edge(parent,node)
-                if(current_node.state.LastAction!="R"):
+
+
+                if(current_node.state.LastAction()!="R`" or len(current_node.state.actions)==0):
                     node+=1
                     stack.add(
-                        Node(current_node.state.R(),node )
+                        Node(current_node.state.R(),node,parent )
                         )
-                    g.add_node(node)
-                    g.add_edge(parent,node)
-                if(current_node.state.LastAction!="B"):
+
+
+                if(current_node.state.LastAction()!="B`" or len(current_node.state.actions)==0):
                     node+=1
                     stack.add(
-                        Node(current_node.state.B(),node )
+                        Node(current_node.state.B(),node,parent )
                         )
-                    g.add_node(node)
-                    g.add_edge(parent,node)
-                if(current_node.state.LastAction!="D"):
+
+
+                if(current_node.state.LastAction()!="D`" or len(current_node.state.actions)==0):
                     node+=1
                     stack.add(
-                        Node(current_node.state.D(),node )
+                        Node(current_node.state.D(),node,parent )
                         )
-                    g.add_node(node)
-                    g.add_edge(parent,node)
-                if(current_node.state.LastAction!="U`"):
+
+
+                if(current_node.state.LastAction()!="U" or len(current_node.state.actions)==0):
                     node+=1
                     stack.add(
-                        Node(current_node.state.U_(),node )
+                        Node(current_node.state.U_(),node,parent )
                         )
-                    g.add_node(node)
-                    g.add_edge(parent,node)
-                if(current_node.state.LastAction!="L`"):
+
+
+                if(current_node.state.LastAction()!="L" or len(current_node.state.actions)==0):
                     node+=1
                     stack.add(
-                        Node(current_node.state.L_(),node )
+                        Node(current_node.state.L_(),node,parent )
                         )
-                    g.add_node(node)
-                    g.add_edge(parent,node)
-                if(current_node.state.LastAction!="F`"):
+
+
+                if(current_node.state.LastAction()!="F" or len(current_node.state.actions)==0):
                     node+=1
                     stack.add(
-                        Node(current_node.state.F_(),node )
+                        Node(current_node.state.F_(),node,parent )
                         )
-                    g.add_node(node)
-                    g.add_edge(parent,node)
-                if(current_node.state.LastAction!="R`"):
+
+
+                if(current_node.state.LastAction()!="R" or len(current_node.state.actions)==0):
                     node+=1
                     stack.add(
-                        Node(current_node.state.R_(),node )
+                        Node(current_node.state.R_(),node,parent )
                         )
-                    g.add_node(node)
-                    g.add_edge(parent,node)
-                if(current_node.state.LastAction!="B`"):
+
+                if(current_node.state.LastAction()!="B" or len(current_node.state.actions)==0):
                     node+=1
                     stack.add(
-                        Node(current_node.state.B_(),node )
+                        Node(current_node.state.B_(),node,parent )
                         )
-                    g.add_node(node)
-                    g.add_edge(parent,node)
-                if(current_node.state.LastAction!="D`"):
+
+
+                if(current_node.state.LastAction()!="D" or len(current_node.state.actions)==0):
                     node+=1
                     stack.add(
-                        Node(current_node.state.D_(),node )
+                        Node(current_node.state.D_(),node,parent )
                         )
-                    g.add_node(node)
-                    g.add_edge(parent,node)
-    except:
+
+    except KeyboardInterrupt:
         print("Nodes explored:"+str(nodes_explored))
         print("Frontier size"+str(len(stack.frontier)))
         print("Heuristic score:"+str(Heuristic(current_node.state)))
         print(current_node.state.actions)
         print(current_node.state.face)
+        print(diag)
         pause=os.system("pause")
         nx.draw(g,with_labels=True)
         plt.savefig("Diagnostic.png")

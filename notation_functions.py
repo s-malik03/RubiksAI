@@ -50,7 +50,13 @@ class Cube():
 
     def LastAction(self):
 
-        return self.actions[-1]
+        if(len(self.actions)!=0):
+
+            return self.actions[-1]
+
+        else:
+
+            return 0
 
     def ClockWise(self,facenumber): #gets new value of face after rotating it clockwise
 
