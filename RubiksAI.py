@@ -107,6 +107,13 @@ def GetInput(CubeObject):
 
 diag=[]
 
+def fd(n):
+
+    first_digit = n
+    while (first_digit >= 10):
+        first_digit = first_digit // 10
+    return first_digit
+
 def Heuristic(CubeState):
 
     total_score=0
@@ -138,6 +145,37 @@ def Heuristic(CubeState):
     ):
         total_score+=1000
 
+    if(
+        CubeFace[1][0][0]==CubeFace[1][1][1] and
+        CubeFace[4][0][0]==CubeFace[4][1][1] and
+        CubeFace[5][0][2]==CubeFace[5][1][1] and
+        total_score>=1111
+    ):
+        total_score+=2
+
+    if(
+        CubeFace[1][0][2]==CubeFace[1][1][1] and
+        CubeFace[3][0][2]==CubeFace[3][1][1] and
+        CubeFace[5][0][0]==CubeFace[5][1][1] and
+        total_score>=1111
+    ):
+        total_score+=20
+
+    if(
+        CubeFace[1][2][0]==CubeFace[1][1][1] and
+        CubeFace[4][0][2]==CubeFace[4][1][1] and
+        CubeFace[0][0][0]==CubeFace[0][1][1] and
+        total_score>=1111
+    ):
+        total_score+=200
+
+    if(
+        CubeFace[1][2][2]==CubeFace[1][1][1] and
+        CubeFace[3][0][0]==CubeFace[3][1][1] and
+        CubeFace[0][0][2]==CubeFace[0][1][1] and
+        total_score>=1111
+    ):
+        total_score+=2000
 
     return total_score
 
@@ -165,45 +203,53 @@ def Solve(CubeObj):
         Node(CubeObj,node)
         )
     g.add_node(node)
-    optimal=25
+    optimal=1000
     i=0
     nodes_explored=0
     score=0
     min=0
+    stage=0
     try:
         while(len(stack.frontier)!=0):
             current_node=stack.remove() #remove last node from frontier
             parent=current_node.number
-            if(Heuristic(current_node.state)>score and ((Heuristic(current_node.state)%10)!=0)):
+            if(fd(Heuristic(current_node.state))==(stage+1)):
+                stage=fd(Heuristic(current_node.state))
+            if(Heuristic(current_node.state)>score and ((Heuristic(current_node.state)%10)!=0)) or ((fd(Heuristic(current_node.state))==(stage+1)) and (Heuristic(current_node.state)>score)):
                 min=len(current_node.state.actions)
                 score=Heuristic(current_node.state)
             while(Heuristic(current_node.state)<score):
                 current_node=stack.remove() #remove last node from frontier
                 parent=current_node.number
-                if(Heuristic(current_node.state)>score):
+                if(fd(Heuristic(current_node.state))==(stage+1)):
+                    stage=fd(Heuristic(current_node.state))
+                if(Heuristic(current_node.state)>score and ((Heuristic(current_node.state)%10)!=0)) or ((fd(Heuristic(current_node.state))==(stage+1)) and (Heuristic(current_node.state)>score)):
                     min=len(current_node.state.actions)
                     score=Heuristic(current_node.state)
             os.system("cls")
             print("Nodes explored:"+ str(nodes_explored))
             print("Frontier size:"+str(len(stack.frontier)))
-            print("Manhattan Distance to solution:"+str(1111-score))
+            print("Manhattan Distance to solution:"+str(2222-score))
             while(len(current_node.state.actions)>optimal):
                 current_node=stack.remove() #if more than 25 moves have been done on the Cube state then discard this state and remove next state from frontier
                 parent=current_node.number
                 while(Heuristic(current_node.state)<score and len(current_node.state.actions)<=min):
                     current_node=stack.remove() #remove last node from frontier
                     parent=current_node.number
-                    if(Heuristic(current_node.state)>score):
+                    if(fd(Heuristic(current_node.state))==(stage+1)):
+                        stage=fd(Heuristic(current_node.state))
+                    if(Heuristic(current_node.state)>score and ((Heuristic(current_node.state)%10)!=0)) or ((fd(Heuristic(current_node.state))==(stage+1)) and (Heuristic(current_node.state)>score)):
                         min=len(current_node.state.actions)
                         score=Heuristic(current_node.state)
             nodes_explored+=1
             g.add_node(current_node.number)
             g.add_edge(current_node.parent,current_node.number)
-            if(Heuristic(current_node.state)==1111): #if goal state has been reached, return node state
+            if(Heuristic(current_node.state)==2222): #if goal state has been reached, return node state
                 solution=current_node.state #temporary solution
                 g.add_node("S")
                 g.add_edge(current_node.parent,"S")
                 nx.draw(g,with_labels=True)
+                plt.show()
                 plt.savefig("Diagnostic.png")
                 return solution
             else:
