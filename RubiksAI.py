@@ -110,7 +110,6 @@ diag=[]
 def Heuristic(CubeState):
 
     total_score=0
-
     CubeFace=CubeState.face
 
     if (
@@ -118,28 +117,27 @@ def Heuristic(CubeState):
         CubeFace[5][0][1]==CubeFace[5][1][1]
     ):
         total_score+=1
-        diag.append(1)
 
     if (
         CubeFace[1][1][0]==CubeFace[1][1][1] and
         CubeFace[4][0][1]==CubeFace[4][1][1]
     ):
-        total_score+=1
-        diag.append(2)
+        total_score+=10
+
 
     if (
         CubeFace[1][1][2]==CubeFace[1][1][1] and
         CubeFace[3][0][1]==CubeFace[3][1][1]
     ):
-        total_score+=1
-        diag.append(3)
+        total_score+=100
+
 
     if (
         CubeFace[1][2][1]==CubeFace[1][1][1] and
         CubeFace[0][0][1]==CubeFace[0][1][1]
     ):
-        total_score+=1
-        diag.append(4)
+        total_score+=1000
+
 
     return total_score
 
@@ -176,7 +174,7 @@ def Solve(CubeObj):
         while(len(stack.frontier)!=0):
             current_node=stack.remove() #remove last node from frontier
             parent=current_node.number
-            if(Heuristic(current_node.state)>score):
+            if(Heuristic(current_node.state)>score and ((Heuristic(current_node.state)%10)!=0)):
                 min=len(current_node.state.actions)
                 score=Heuristic(current_node.state)
             while(Heuristic(current_node.state)<score):
@@ -188,7 +186,7 @@ def Solve(CubeObj):
             os.system("cls")
             print("Nodes explored:"+ str(nodes_explored))
             print("Frontier size:"+str(len(stack.frontier)))
-            print("Manhattan Distance to solution:"+str(4-score))
+            print("Manhattan Distance to solution:"+str(1111-score))
             while(len(current_node.state.actions)>optimal):
                 current_node=stack.remove() #if more than 25 moves have been done on the Cube state then discard this state and remove next state from frontier
                 parent=current_node.number
@@ -201,7 +199,7 @@ def Solve(CubeObj):
             nodes_explored+=1
             g.add_node(current_node.number)
             g.add_edge(current_node.parent,current_node.number)
-            if(Heuristic(current_node.state)==4): #if goal state has been reached, return node state
+            if(Heuristic(current_node.state)==1111): #if goal state has been reached, return node state
                 solution=current_node.state #temporary solution
                 g.add_node("S")
                 g.add_edge(current_node.parent,"S")
