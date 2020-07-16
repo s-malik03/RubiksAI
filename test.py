@@ -59,41 +59,40 @@ def format(string):
             count += 1
         i += 1
 
+    return formatted
 
-    print(formatted)
 
 
 
 
 
 #scrambles cube for different solutions
-moves = [
-"B" ,"B", "U", "R", "R", "U", "B", "B", "R", "F'", "U'", "D", "D", "B", "D", "L", "L", "R", "D",
-"D", "U", "U", "R", "R", "L", "L", "F'", "U", "B", "F", "U", "U", "B", "U", "R"]
+
 def scramble(moves, c):
     notations = {
     "U":Cube.U,
-    "U'":Cube.U_,
+    "U_":Cube.U_,
     "L":Cube.L,
-    "L'":Cube.L_,
+    "L_":Cube.L_,
     "F":Cube.F,
-    "F'":Cube.F_,
+    "F_":Cube.F_,
     "B":Cube.B,
-    "B'":Cube.B_,
+    "B_":Cube.B_,
     "D":Cube.D,
-    "D'":Cube.D_,
+    "D_":Cube.D_,
     "R":Cube.R,
-    "R'":Cube.R_
+    "R_":Cube.R_
     }
     for i in moves:
-        print(i)
         current_move = notations[i]
-        c  = current_move(c)
-    a = Cube.GetAllFaces(c)
-    print(a)
+        c = current_move(c)
     return c
 
 
 
 
-format("B2 R F2 D' U' R' F2 B' U2 F' U D L' U2 B U F' U2 L' R' U' L2 F2 L' F")
+moves = format("F")
+print(moves)
+
+c = scramble(moves,c)
+print(Cube.GetFace(c,0))
