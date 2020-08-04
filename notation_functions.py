@@ -5,9 +5,9 @@ import copy
 
 class Cube():
 
-    def __init__(self,face=None,actions=None):
+    def __init__(self,face=[],actions=None):
 
-        if face!=None:
+        if len(face)!=0:
 
             self.face=face
 
@@ -57,6 +57,16 @@ class Cube():
         else:
 
             return 0
+
+    def LastThree(self):
+
+        try:
+            if (self.actions[-1]==self.actions[-2]) and (self.actions[-3]==self.actions[-2]) and len(self.actions)!=0:
+                return self.actions[-1]
+            else:
+                return ""
+        except:
+            return ""
 
     def ClockWise(self,facenumber): #gets new value of face after rotating it clockwise
 
